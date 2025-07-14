@@ -1,5 +1,10 @@
 <script lang="ts" setup>
 import { useUserStore } from '@/stores'
+import { useRoute } from 'vue-router'
+// 导入封装request
+import request from '@/utils/request'
+import { onMounted } from 'vue'
+import { showToast } from 'vant'
 const store = useUserStore()
 const setUser = () => {
   store.setUser({
@@ -9,6 +14,29 @@ const setUser = () => {
     account: '123',
     id: '123'
   })
+}
+
+// 获取当前页面地址
+const route = useRoute()
+console.log('当前路由对象', route)
+
+// 401test
+// const getUser = async () => {
+//   const res = await request.get('/patient/myUser')
+//   console.log(res)
+// }
+onMounted(() => {
+  // getUser()
+  login()
+})
+const login = async () => {
+  const res = await request.post('/login/password', {
+    mobile: '13211112222',
+    // 密码 abc123456 测试：出现非10000的情况
+    password: 'abc12345'
+  })
+  showToast(res.statusText)
+  console.log('登录成功', res)
 }
 </script>
 
