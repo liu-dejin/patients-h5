@@ -18,8 +18,9 @@ export default defineConfig({
       resolvers: [VantResolver()]
     }),
     Components({
-      dts: false,
-      resolvers: [VantResolver()]
+      resolvers: [VantResolver()],
+      // dts: './auto-imports.d.ts'
+      dts: false
     })
   ],
   resolve: {

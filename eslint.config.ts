@@ -19,7 +19,13 @@ export default typescriptEslint.config(
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      globals: globals.browser,
+      globals: {
+        ...globals.browser
+        //配置一下忽略项 比如ele的小组件和vant的轻提示 不要引入css产生的额外异常
+        // ElMessage: 'readonly',
+        // ElMessageBox: 'readonly',
+        // ElLoading: 'readonly'
+      },
       parserOptions: {
         parser: typescriptEslint.parser
       }

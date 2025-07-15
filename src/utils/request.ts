@@ -1,8 +1,6 @@
 import axios from 'axios'
 import router from '@/router'
 import { useUserStore } from '@/stores'
-import { showToast } from 'vant'
-
 const baseURL = 'https://consult-api.itheima.net/'
 const instance = axios.create({
   //  基础地址，超时时间
