@@ -17,6 +17,7 @@ export default defineConfig({
     AutoImport({
       resolvers: [VantResolver()]
     }),
+    // vant组件自动注册       components中的组件也会自动注册
     Components({
       resolvers: [VantResolver()],
       // dts: './auto-imports.d.ts'

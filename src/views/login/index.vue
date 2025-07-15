@@ -1,7 +1,16 @@
+<script lang="ts" setup>
+const clickRight = () => {
+  console.log('点击了注册')
+}
+</script>
+
 <template>
-  <div class="login">
-    <van-button type="primary">按钮</van-button>
-    <van-checkbox :checked="true">复选框</van-checkbox>
+  <div>
+    <cp-nav-bar
+      middle="登录"
+      right="注册"
+      @click-right="clickRight"
+    ></cp-nav-bar>
   </div>
 </template>
 
