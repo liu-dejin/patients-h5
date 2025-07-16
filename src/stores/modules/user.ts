@@ -21,10 +21,7 @@ export const useUserStore = defineStore(
       user.value = {} as User
     }
 
-    // 测试
-    const ldj = ref(1)
-
-    return { user, setUser, removeUser, ldj }
+    return { user, setUser, removeUser }
   },
   //方式1.默认存储所有数据 以store的ID作为存储key
   // {

@@ -1,3 +1,4 @@
+import { useUserStore } from '@/stores'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -39,4 +40,14 @@ const router = createRouter({
   ]
 })
 
+// 全局前置导航守卫
+router.beforeEach((to) => {
+  // 获取token
+  const store = useUserStore()
+  // 白名单
+  const whiteList = ['/login']
+  // 如果你没有token并且不在白名单中，就跳转到登录页面
+  // user可能 为空对象  故用? 防止error
+  if (!store.user?.token && !whiteList.includes(to.path)) return '/login'
+})
 export default router
