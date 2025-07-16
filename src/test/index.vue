@@ -56,6 +56,19 @@ const login = async () => {
 
   <div class="test">测试页面</div>
   <p class="cp-use">11111</p>
+
+  <!-- 测试精灵图 -->
+  <!-- <svg aria-hidden="true">
+    #icon-文件夹名称-图片名称
+    <use href="#icon-login-eye-off" />
+  </svg>
+  <svg aria-hidden="true">
+    #icon-文件夹名称-图片名称
+    <use href="#icon-home-docs" />
+  </svg> -->
+  <!-- 再次优化  -->
+  <cp-icon name="home-docs" />
+  <cp-icon name="consult-alipay" />
 </template>
 
 <style lang="scss" scoped>

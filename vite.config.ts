@@ -7,6 +7,10 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { VantResolver } from '@vant/auto-import-resolver'
+// 1.导入导包精灵图插件
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+// 2.导入路径包
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -22,6 +26,10 @@ export default defineConfig({
       resolvers: [VantResolver()],
       // dts: './auto-imports.d.ts'
       dts: false
+    }),
+    createSvgIconsPlugin({
+      // 指定图标文件夹，绝对路径（NODE代码）
+      iconDirs: [path.resolve(process.cwd(), 'src/icons')]
     })
   ],
   resolve: {

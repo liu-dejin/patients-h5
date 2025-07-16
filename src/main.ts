@@ -10,6 +10,9 @@ import '@/styles/index.scss'
 import { Toast } from 'vant'
 const app = createApp(App)
 
+// 注册图标
+import 'virtual:svg-icons-register'
+
 app.use(Toast)
 app.use(router)
 app.use(pinia)
