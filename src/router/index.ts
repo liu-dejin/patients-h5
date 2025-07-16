@@ -19,6 +19,13 @@ const router = createRouter({
       }
     },
     {
+      path: '/user/patient',
+      component: () => import('@/views/User/PatientPage.vue'),
+      meta: {
+        title: '家庭档案'
+      }
+    },
+    {
       path: '/',
       redirect: '/home',
       component: () => import('@/views/Layout/index.vue'),

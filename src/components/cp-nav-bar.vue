@@ -22,8 +22,9 @@ const onClickLeft = () => {
 
 // 获取父组件传递的属性
 defineProps<{
-  middle: string
-  right: string
+  middle?: string
+  right?: string
+  title?: string
 }>()
 //子传父 点击注册 index做注册逻辑处理
 const emit = defineEmits<{
