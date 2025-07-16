@@ -1,4 +1,4 @@
-import type { User, CodeType } from '@/types/user'
+import type { User, CodeType, UserInfo } from '@/types/user'
 import request from '@/utils/request'
 
 //密码登录
@@ -11,3 +11,6 @@ export const getSmsCode = (mobile: string, type: CodeType) =>
 // 短信登录接口
 export const loginBySms = (mobile: string, code: string) =>
   request.post<User>('/login', { mobile, code })
+
+// 获取用户信息
+export const getUserInfo = () => request<UserInfo>('/patient/myUser')
