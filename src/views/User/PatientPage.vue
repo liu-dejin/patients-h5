@@ -2,7 +2,6 @@
 import { getPatientList } from '@/services/user'
 import type { PatientList } from '@/types/user'
 import { onMounted, ref } from 'vue'
-
 //组件挂载完毕,获取数据
 const list = ref<PatientList>([])
 const loadList = async () => {
@@ -12,6 +11,18 @@ const loadList = async () => {
 onMounted(() => {
   loadList()
 })
+//选项数据
+const options = [
+  { label: '男', value: 0 },
+  {
+    label: '女',
+    value: 1
+  }
+]
+const show = ref(false)
+const showPopup = () => {
+  show.value = true
+}
 </script>
 
 <template>
@@ -31,11 +42,36 @@ onMounted(() => {
         <div v-if="item.defaultFlag === 1" class="tag">默认</div>
       </div>
 
-      <div v-if="list.length < 0" class="patient-add">
+      <div v-if="list.length < 6" class="patient-add" @click="showPopup">
         <cp-icon name="user-add" />
         <p>添加患者</p>
       </div>
       <div class="patient-tip">最多可添加 6 人</div>
+      <!-- popup组件 -->
+      <van-popup v-model:show="show" position="right">
+        <cp-nav-bar
+          :back="() => (show = false)"
+          title="添加患者"
+          right-text="保存"
+        ></cp-nav-bar>
+        <div>
+          <van-form ref="form" autocomplete="off">
+            <van-field label="真实姓名" placeholder="请输入真实姓名" />
+            <van-field label="身份证号" placeholder="请输入身份证号" />
+            <van-field label="性别" class="pb4">
+              <!-- 单选按钮组件 -->
+              <template #input>
+                <cp-radio-btn :options="options"></cp-radio-btn>
+              </template>
+            </van-field>
+            <van-field label="默认就诊人">
+              <template #input>
+                <van-checkbox :icon-size="18" round />
+              </template>
+            </van-field>
+          </van-form>
+        </div>
+      </van-popup>
     </div>
   </div>
 </template>
@@ -43,7 +79,16 @@ onMounted(() => {
 <style lang="scss" scoped>
 .patient-page {
   padding: 46px 0 80px;
+  :deep() {
+    .van-popup {
+      width: 100%;
+      height: 100%;
+      padding-top: 46px;
+      box-sizing: border-box;
+    }
+  }
 }
+
 .patient-list {
   padding: 15px;
 }
