@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import KnowledgeCard from './KnowledgeCard.vue'
+import type { KnowledgeType } from '@/types/cousult'
+
+defineProps<{
+  type: KnowledgeType
+}>()
+
 // 加载中状态
 const loading = ref(false)
 // 看数据是否完全加载
