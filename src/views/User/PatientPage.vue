@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getPatientList } from '@/services/user'
+import { addPatient, getPatientList } from '@/services/user'
 import type { Patient, PatientList } from '@/types/user'
 import { computed, onMounted, ref } from 'vue'
 import { idCardRules, nameRules } from '@/utils/rules'
@@ -57,6 +57,12 @@ const onSubmit = async () => {
       message: '性别与身份证不匹配\n你确认提交吗'
     })
   }
+  // 提交后台
+  await addPatient(patient.value)
+  // 成功关闭添加患者界面,加载患者列表,成功提示
+  show.value = false
+  loadList()
+  showSuccessToast('添加成功')
 }
 </script>
 
