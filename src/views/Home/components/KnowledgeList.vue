@@ -30,10 +30,13 @@ const onLoad = async () => {
   list.value.push(...res.data.rows)
   //判断数据是否加载完毕
   if (params.value.current >= res.data.pageTotal) {
+    //如果数据加载完毕 finished = true
     finished.value = true
   } else {
+    // 没加载完就加载下一页
     params.value.current++
   }
+  // 不管加没加数据，关闭loading
   loading.value = false
 }
 </script>
