@@ -7,9 +7,8 @@ const router = useRouter()
 
 // 获取父组件传递的属性
 const props = defineProps<{
-  middle?: string
-  right?: string
   title?: string
+  right?: string
   back?: () => void
 }>()
 //子传父 点击注册 index做注册逻辑处理
@@ -40,7 +39,7 @@ const onClickLeft = () => {
   <van-nav-bar
     left-arrow
     fixed
-    :title="middle"
+    :title="title"
     :right-text="right"
     @click-left="onClickLeft"
     @click-right="emit('click-right')"

@@ -76,7 +76,7 @@ const clickRight = () => {
 <template>
   <div>
     <!-- 顶部导航 -->
-    <cp-nav-bar middle="登录" right="注册" @click-right="clickRight" />
+    <cp-nav-bar title="登录" right="注册" @click-right="clickRight" />
 
     <!-- 登录切换区域 -->
     <div class="login">
