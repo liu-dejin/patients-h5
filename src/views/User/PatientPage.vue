@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { getPatientList } from '@/services/user'
-import type { PatientList } from '@/types/user'
-import { onMounted, ref } from 'vue'
+import type { Patient, PatientList } from '@/types/user'
+import { computed, onMounted, ref } from 'vue'
+import { idCardRules, nameRules } from '@/utils/rules'
+import type { FormInstance } from 'vant'
 //组件挂载完毕,获取数据
 const list = ref<PatientList>([])
 const loadList = async () => {
@@ -21,7 +23,40 @@ const options = [
 ]
 const show = ref(false)
 const showPopup = () => {
+  // 重置表单
+  patient.value = { ...initPatient }
   show.value = true
+}
+const initPatient: Patient = {
+  name: '',
+  idCard: '',
+  gender: 1,
+  defaultFlag: 0
+}
+// 表单数据
+const patient = ref<Patient>({
+  ...initPatient
+})
+
+// 支持复选框 1/0=>true/false
+const defaultFlag = computed({
+  get: () => (patient.value.defaultFlag === 1 ? true : false),
+  set: (value) => (patient.value.defaultFlag = value ? 1 : 0)
+})
+// 提交
+const form = ref<FormInstance>()
+const onSubmit = async () => {
+  // 表单整体校验 validate进行校验
+  await form.value?.validate()
+  //性别校验
+  //取出身份证倒数第二位, %2之后  1男 0女
+  const gender = +patient.value.idCard.slice(-2, -1) % 2
+  if (gender !== patient.value.gender) {
+    await showConfirmDialog({
+      title: '温馨提示',
+      message: '性别与身份证不匹配\n你确认提交吗'
+    })
+  }
 }
 </script>
 
@@ -53,20 +88,34 @@ const showPopup = () => {
           :back="() => (show = false)"
           title="添加患者"
           right-text="保存"
+          @click-right="onSubmit"
         ></cp-nav-bar>
         <div>
           <van-form ref="form" autocomplete="off">
-            <van-field label="真实姓名" placeholder="请输入真实姓名" />
-            <van-field label="身份证号" placeholder="请输入身份证号" />
+            <van-field
+              v-model="patient.name"
+              label="真实姓名"
+              placeholder="请输入真实姓名"
+              :rules="nameRules"
+            />
+            <van-field
+              v-model="patient.idCard"
+              :rules="idCardRules"
+              label="身份证号"
+              placeholder="请输入身份证号"
+            />
             <van-field label="性别" class="pb4">
               <!-- 单选按钮组件 -->
               <template #input>
-                <cp-radio-btn :options="options"></cp-radio-btn>
+                <cp-radio-btn
+                  v-model="patient.gender"
+                  :options="options"
+                ></cp-radio-btn>
               </template>
             </van-field>
             <van-field label="默认就诊人">
               <template #input>
-                <van-checkbox :icon-size="18" round />
+                <van-checkbox v-model="defaultFlag" :icon-size="18" round />
               </template>
             </van-field>
           </van-form>

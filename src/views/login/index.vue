@@ -2,7 +2,7 @@
 // ================== 📦 导入依赖 ==================
 import { ref, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { type FormInstance } from 'vant'
+import type { FormInstance } from 'vant'
 import { showToast, showFailToast, showSuccessToast } from 'vant'
 import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
 import { getSmsCode, loginByPassword, loginBySms } from '@/services/user'
