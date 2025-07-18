@@ -40,6 +40,13 @@ const router = createRouter({
       }
     },
     {
+      path: '/consult/illness',
+      component: () => import('@/views/Consult/Consultillness.vue'),
+      meta: {
+        title: '病情描述'
+      }
+    },
+    {
       path: '/',
       redirect: '/home',
       component: () => import('@/views/Layout/index.vue'),

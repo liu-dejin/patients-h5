@@ -139,6 +139,12 @@ type SubDep = {
   id: string
   name: string
 }
+// 一级科室
 type TopDep = SubDep & {
   child: SubDep[]
 }
+// 病情描述对象
+type Consultillness = Pick<
+  PartialConsult,
+  'illnessDesc' | 'illnessTime' | 'consultFlag' | 'pictures'
+>
