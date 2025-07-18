@@ -1,6 +1,7 @@
 import type {
   DoctorPage,
   FollowType,
+  Image,
   KnowledgePage,
   KnowledgeParams,
   PageParams,
@@ -20,3 +21,9 @@ export const FollowOrUnfollow = (id: string, type: FollowType = 'doc') =>
   request.post('/like', { id, type })
 //获取科室
 export const getAllDep = () => request.get<TopDep[]>('/dep/all')
+// 上传图片的接口
+export const uploadImage = (file: File) => {
+  const fd = new FormData()
+  fd.append('file', file)
+  return request.post<Image>('/upload', fd)
+}
