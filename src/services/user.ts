@@ -30,3 +30,6 @@ export const editPatient = (patient: Patient) =>
   request.put('/patient/update', patient)
 //删除患者信息
 export const delPatient = (id: string) => request.delete(`/patient/del/${id}`)
+// 获取患者详情
+export const getPatientDetail = (id: string) =>
+  request.get<Patient>(`/patient/info/${id}`)
