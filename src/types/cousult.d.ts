@@ -132,4 +132,13 @@ export type Consult = {
 //Partial<T> 把一个对象的所有属性都变为可选
 type PartialConsult = Partial<Consult>
 //Required<T> 把一个对象中的所有属性变为必选
-type RequiredConsult = Required<PartialConsult>
+// type RequiredConsult = Required<PartialConsult>
+
+// 二级科室
+type SubDep = {
+  id: string
+  name: string
+}
+type TopDep = SubDep & {
+  child: SubDep[]
+}
