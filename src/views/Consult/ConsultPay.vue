@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getConsultOrderPre } from '@/services/consult'
+import { createConsultOrder, getConsultOrderPre } from '@/services/consult'
 import { getPatientDetail } from '@/services/user'
 import { useConsultStore } from '@/stores'
 import type { ConsultOrderPreData } from '@/types/cousult'
@@ -34,6 +34,25 @@ onMounted(() => {
 
 // 同意
 const agree = ref(false)
+// 生成订单
+const show = ref(false)
+const loading = ref(false)
+const orderId = ref('')
+const submit = async () => {
+  if (!agree.value) return showToast('请阅读并同意用户协议')
+  loading.value = true
+  //   发送生成订单的请求
+  const res = await createConsultOrder(store.consult)
+  loading.value = false
+  //清理
+  store.clear()
+  //记录订单id
+  orderId.value = res.data.id
+  // 打开抽屉面板
+  show.value = true
+}
+//支付方式
+const paymentMethod = ref<0 | 1>()
 </script>
 
 <template>
@@ -74,7 +93,34 @@ const agree = ref(false)
       :price="payInfo.actualPayment * 100"
       button-text="立即支付"
       text-align="left"
+      :loading="loading"
+      @click="submit"
     />
+    <!-- 支付抽屉控制面板 -->
+    <van-action-sheet v-model:show="show" title="选择支付方式">
+      <van-action-sheet v-model:show="show" title="选择支付方式">
+        <div class="pay-type">
+          <p class="amount">￥{{ payInfo.actualPayment.toFixed(2) }}</p>
+          <van-cell-group>
+            <van-cell title="微信支付" @click="paymentMethod = 0">
+              <template #icon><cp-icon name="consult-wechat" /></template>
+              <template #extra
+                ><van-checkbox :checked="paymentMethod === 0"
+              /></template>
+            </van-cell>
+            <van-cell title="支付宝支付" @click="paymentMethod = 1">
+              <template #icon><cp-icon name="consult-alipay" /></template>
+              <template #extra
+                ><van-checkbox :checked="paymentMethod === 1"
+              /></template>
+            </van-cell>
+          </van-cell-group>
+          <div class="btn">
+            <van-button type="primary" round block>立即支付</van-button>
+          </div>
+        </div>
+      </van-action-sheet>
+    </van-action-sheet>
   </div>
   <div v-else class="consult-pay-page">
     <cp-nav-bar title="支付"></cp-nav-bar>
