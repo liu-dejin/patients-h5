@@ -54,6 +54,16 @@ const router = createRouter({
       }
     },
     {
+      path: '/room',
+      component: () => import('@/views/Room/index.vue'),
+      meta: {
+        title: '问诊室'
+      },
+      beforeEnter(to) {
+        if (to.query.payResult === 'false') return '/user/consult'
+      }
+    },
+    {
       path: '/',
       redirect: '/home',
       component: () => import('@/views/Layout/index.vue'),

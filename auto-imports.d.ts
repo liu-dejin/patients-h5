@@ -8,6 +8,7 @@ export {}
 declare global {
   const showConfirmDialog: typeof import('vant/es')['showConfirmDialog']
   const showFailToast: typeof import('vant/es')['showFailToast']
+  const showLoadingToast: typeof import('vant/es')['showLoadingToast']
   const showSuccessToast: typeof import('vant/es')['showSuccessToast']
   const showToast: typeof import('vant/es')['showToast']
 }
