@@ -2,9 +2,10 @@
 import { createConsultOrder, getConsultOrderPre } from '@/services/consult'
 import { getPatientDetail } from '@/services/user'
 import { useConsultStore } from '@/stores'
-import type { ConsultOrderPreData } from '@/types/cousult'
+import type { ConsultOrderPreData, PartialConsult } from '@/types/cousult'
 import type { Patient } from '@/types/user'
 import { onMounted, ref } from 'vue'
+import { onBeforeRouteLeave, useRouter } from 'vue-router'
 
 //获取预支付信息
 const payInfo = ref<ConsultOrderPreData>()
@@ -26,8 +27,30 @@ const loadPatient = async () => {
   const res = await getPatientDetail(store.consult.patientId)
   patient.value = res.data
 }
-
+//keyof 被用来提取 PartialConsult 类型的所有键 组合成联合类型
+type Key = keyof PartialConsult
 onMounted(() => {
+  // 生成订单需要的信息不完整时候需要提示
+  const vaildKeys: Key[] = [
+    'type',
+    'illnessType',
+    'depId',
+    'illnessDesc',
+    'illnessTime',
+    'consultFlag',
+    'patientId'
+  ]
+  const value = vaildKeys.every((key) => store.consult[key] !== undefined)
+  if (!value) {
+    return showConfirmDialog({
+      title: '温馨提示',
+      message:
+        '问诊信息不完整请重新填写,如有未支付的问诊订单可在问诊记录中继续支付',
+      closeOnPopstate: false
+    }).then(() => {
+      router.push('/')
+    })
+  }
   loadData()
   loadPatient()
 })
@@ -53,6 +76,34 @@ const submit = async () => {
 }
 //支付方式
 const paymentMethod = ref<0 | 1>()
+
+// 提示1 取消支付将无法获得医生回复,医生接诊名额有限,是否确认关闭
+// 提示2 问诊信息不完整请重新填写,如有未支付的问诊订单可在问诊记录中继续支付
+
+// 用户引导
+onBeforeRouteLeave(() => {
+  if (orderId.value) return false
+})
+const router = useRouter()
+const onClose = () => {
+  return showConfirmDialog({
+    title: '温馨提示',
+    message: '取消支付将无法获得医生回复,医生接诊名额有限,是否确认关闭',
+    cancelButtonText: '狠心离开',
+    confirmButtonText: '继续支付'
+  })
+    .then(() => {
+      //阻止关闭
+      return false
+    })
+    .catch(() => {
+      //阻止不生效
+      orderId.value = ''
+      router.push('/user/consult')
+      // 正常关闭
+      return true
+    })
+}
 </script>
 
 <template>
@@ -97,29 +148,34 @@ const paymentMethod = ref<0 | 1>()
       @click="submit"
     />
     <!-- 支付抽屉控制面板 -->
-    <van-action-sheet v-model:show="show" title="选择支付方式">
-      <van-action-sheet v-model:show="show" title="选择支付方式">
-        <div class="pay-type">
-          <p class="amount">￥{{ payInfo.actualPayment.toFixed(2) }}</p>
-          <van-cell-group>
-            <van-cell title="微信支付" @click="paymentMethod = 0">
-              <template #icon><cp-icon name="consult-wechat" /></template>
-              <template #extra
-                ><van-checkbox :checked="paymentMethod === 0"
-              /></template>
-            </van-cell>
-            <van-cell title="支付宝支付" @click="paymentMethod = 1">
-              <template #icon><cp-icon name="consult-alipay" /></template>
-              <template #extra
-                ><van-checkbox :checked="paymentMethod === 1"
-              /></template>
-            </van-cell>
-          </van-cell-group>
-          <div class="btn">
-            <van-button type="primary" round block>立即支付</van-button>
-          </div>
+
+    <van-action-sheet
+      v-model:show="show"
+      title="选择支付方式"
+      :close-on-popstate="false"
+      :closeable="false"
+      :before-close="onClose"
+    >
+      <div class="pay-type">
+        <p class="amount">￥{{ payInfo.actualPayment.toFixed(2) }}</p>
+        <van-cell-group>
+          <van-cell title="微信支付" @click="paymentMethod = 0">
+            <template #icon><cp-icon name="consult-wechat" /></template>
+            <template #extra
+              ><van-checkbox :checked="paymentMethod === 0"
+            /></template>
+          </van-cell>
+          <van-cell title="支付宝支付" @click="paymentMethod = 1">
+            <template #icon><cp-icon name="consult-alipay" /></template>
+            <template #extra
+              ><van-checkbox :checked="paymentMethod === 1"
+            /></template>
+          </van-cell>
+        </van-cell-group>
+        <div class="btn">
+          <van-button type="primary" round block>立即支付</van-button>
         </div>
-      </van-action-sheet>
+      </div>
     </van-action-sheet>
   </div>
   <div v-else class="consult-pay-page">
