@@ -2,10 +2,10 @@
 import { IllnessTime } from '@/enums'
 import { uploadImage } from '@/services/consult'
 import { useConsultStore } from '@/stores'
-import type { Consultillness } from '@/types/cousult'
+import type { Consultillness, Image } from '@/types/cousult'
 import type { UploaderAfterRead } from 'vant'
 import type { UploaderFileListItem } from 'vant/es'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 // 选项数据
 const timeOptions = [
@@ -27,7 +27,7 @@ const form = ref<Consultillness>({
 })
 
 //上传图片
-const fileList = ref([])
+const fileList = ref<Image[]>([])
 // 上传图片逻辑
 const onAfterRead: UploaderAfterRead = (item) => {
   //类型守卫
@@ -72,8 +72,25 @@ const next = () => {
   // 记录病情
   store.setIllness(form.value)
   // 跳转 携带标识
-  router.push('user/patient?isChange=1')
+  router.push('/user/patient?isChange=1')
 }
+//数据回显
+onMounted(() => {
+  // 有记录弹提示
+  if (store.consult.illnessDesc) {
+    showConfirmDialog({
+      title: '温馨提示',
+      message: '是否恢复之前填写的病情信息呢?',
+      // 回退关闭 不关闭回退时也有弹窗
+      closeOnPopstate: false
+    }).then(() => {
+      //回显数据
+      const { illnessDesc, illnessTime, consultFlag, pictures } = store.consult
+      form.value = { illnessDesc, illnessTime, consultFlag, pictures }
+      fileList.value = pictures || []
+    })
+  }
+})
 </script>
 
 <template>
